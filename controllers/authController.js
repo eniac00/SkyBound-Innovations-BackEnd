@@ -5,8 +5,10 @@ const jwt = require('jsonwebtoken');
 const handleLogin = async (req, res) => {
     const { user, pwd } = req.body;
     if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
+    
 
     const foundUser = await User.findOne({ username: user }).exec();
+    const { email } = foundUser;
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
     // evaluate password 
     const match = await bcrypt.compare(pwd, foundUser.password);
@@ -17,7 +19,8 @@ const handleLogin = async (req, res) => {
             {
                 "UserInfo": {
                     "username": foundUser.username,
-                    "roles": roles
+                    "roles": roles,
+                    "email": email
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -38,7 +41,9 @@ const handleLogin = async (req, res) => {
         res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
         // Send authorization roles and access token to user
-        res.json({ roles, accessToken });
+        // Send authorization roles, email, and access token to user
+        res.json({ email: foundUser.email, roles, accessToken });
+
 
     } else {
         res.sendStatus(401);
