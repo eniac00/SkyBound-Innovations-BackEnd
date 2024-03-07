@@ -17,7 +17,11 @@ const flightSchema = new Schema({
     HOTELS: {
         type: [String], 
         default: [] 
+    },
+    image: {
+        type: String,
+        default: null // or use an empty string
     }
 });
 
-module.exports = mongoose.model('Package', flightSchema); 
+module.exports = mongoose.model('Package', flightSchema);
