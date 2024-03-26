@@ -1,7 +1,6 @@
 const AirlineDetails = require('../../model/AirlineDetails');
 const User = require('../../model/User');
 const Package = require('../../model/Package');
-const ROLES_LIST = require('../../config/roles_list');
 
 const getPackages = async (req, res) => {
         const airline = await User.findOne({ username: req.username }).exec();
@@ -52,11 +51,26 @@ const createPackage = async (req, res) => {
 }
 
 const updatePackage = async (req, res) => {
-    // update package
+    res.status(200).json({ 'message': "not implemented"} );
 }
 
 const deletePackage = async (req, res) => {
-    // delete package
+
+    if (!req?.body?.id) return res.status(400).json({ "message": 'Package ID required' });
+
+    const package = await Package.findOne({ _id: req.body.id }).exec();
+
+    if (!package) {
+        return res.status(204).json({ 'message': `Package ID ${req.body.id} not found` });
+    }
+
+    const airline = await User.findOne({ username: req.username }).exec();
+    const airlineDetails = await AirlineDetails.findOne({ _id: airline.detailsObjectId }).exec();
+
+    await AirlineDetails.updateOne({ _id: airlineDetails._id }, { $pull: { packages: req.body.id } });
+    await Package.deleteOne({ _id: req.body.id });
+
+    res.status(200).json({ "message": `Package ${req.body.id} removed`});
 }
 
 
