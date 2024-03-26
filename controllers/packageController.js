@@ -14,7 +14,8 @@ const newPackage = async (req, res) => {
             Destination: req.body.Destination,
             No_of_days: req.body.No_of_days,
             price: req.body.price,
-            image:req.body.image
+            image:req.body.image,
+            Airlines:req.body.Airlines
         });
 
         res.status(201).json(result);
@@ -23,7 +24,14 @@ const newPackage = async (req, res) => {
     }
 }
 
+const getAllPackages = async (req, res) => {
+    const packages = await package.find();
+    if (!packages) return res.status(204).json({ 'message': 'No packages found.' });
+    res.json(packages);
+}
+
 
 module.exports = {
-    newPackage
+    newPackage,
+    getAllPackages
 }

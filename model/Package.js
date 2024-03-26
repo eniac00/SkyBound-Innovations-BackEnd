@@ -21,6 +21,10 @@ const flightSchema = new Schema({
     image: {
         type: String,
         default: null // or use an empty string
+    },
+    Airlines:{
+        type:String,
+        required:true
     }
 });
 
