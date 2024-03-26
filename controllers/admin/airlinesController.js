@@ -23,7 +23,9 @@ const createNewAirline = async (req, res) => {
 
         //create and store the new user
         const details = await AirlineDetails.create({ 
-            "name": req.body.name
+            "name": req.body.name,
+            "license": req.body.license,
+            "registration": req.body.registration
         });
 
         const result = await User.create({
@@ -36,7 +38,7 @@ const createNewAirline = async (req, res) => {
 
         console.log(result);
 
-        res.status(201).json({ 'success': `New user ${username} created!` });
+        res.status(201).json({ 'success': `New airline ${username} created!` });
     } catch (err) {
         res.status(500).json({ 'message': err.message });
     }

@@ -49,6 +49,8 @@ app.use('/TestWow', require('./routes/test'));
 
 app.use(verifyJWT);
 app.use('/admin', require('./routes/api/admin'));
+app.use('/user', require('./routes/api/user.js'));
+app.use('/airline', require('./routes/api/airline.js'));
 
 app.all('*', (req, res) => {
     res.status(404);
