@@ -1,7 +1,10 @@
 const User = require('../../model/User');
+const UserDetails = require('../../model/UserDetails');
+const bcrypt = require('bcrypt');
+const ROLES_LIST = require('../../config/roles_list');
 
 const getAllUsers = async (req, res) => {
-    const users = await User.find();
+    const users = await User.find({ 'roles.User': ROLES_LIST.User });
     if (!users) return res.status(204).json({ 'message': 'No users found' });
     res.json(users);
 }
@@ -19,9 +22,15 @@ const createNewUser = async (req, res) => {
         const hashedPwd = await bcrypt.hash(password, 10);
 
         //create and store the new user
+        const details = await UserDetails.create({ 
+            "firstname": req.body.firstname,
+            "lastname": req.body.lastname
+        });
+
         const result = await User.create({
             "username": username,
-            "password": hashedPwd
+            "password": hashedPwd,
+            "detailsObjectId": details._id
         });
 
         console.log(result);
@@ -41,9 +50,15 @@ const updateUser = async (req, res) => {
     if (!user) {
         return res.status(204).json({ "message": `No users matches ID ${req.body.id}.` });
     }
+
+    const userDetails = await UserDetails.findOne({ _id: user.detailsObjectId }).exec();
+
     if (req.body?.username) user.username = req.body.username;
     if (req.body?.password) user.password = req.body.password;
+    if (req.body?.firstname) userDetails.firstname = req.body.firstname;
+    if (req.body?.lastname) userDetails.lastname = req.body.lastname;
     const result = await user.save();
+    const resultDetails = await userDetails.save();
     res.json(result);
 }
 
@@ -55,6 +70,8 @@ const deleteUser = async (req, res) => {
     if (!user) {
         return res.status(204).json({ 'message': `User ID ${req.body.id} not found` });
     }
+    const userDetails = await UserDetails.findOne({ _id: user.detailsObjectId }).exec();
+    const resultDetails = await userDetails.deleteOne({ _id: userDetails._id });
     const result = await user.deleteOne({ _id: req.body.id });
     res.json(result);
 }

@@ -6,12 +6,16 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    detailsObjectId: {
+        type: Schema.Types.ObjectId,
+        ref: 'detailsModel'
+    }, 
     roles: {
         User: {
             type: Number,
             default: 1000
         },
-        Editor: Number,
+        Airline: Number,
         Admin: Number
     },
     password: {
