@@ -4,9 +4,25 @@ const bcrypt = require('bcrypt');
 const ROLES_LIST = require('../../config/roles_list');
 
 const getAllAirlines = async (req, res) => {
-    const airlines = await User.find({ 'roles.Airline': ROLES_LIST.Airline });
-    if (!airlines) return res.status(204).json({ 'message': 'No users found' });
-    res.json(airlines);
+     const result = await User.aggregate([
+        {
+          $match: {
+            'roles.User': ROLES_LIST.Airline
+          }
+        },
+        {
+          $lookup: {
+            from: "airlinedetails", 
+            localField: "detailsObjectId",
+            foreignField: "_id",
+            as: "details"
+          }
+        }
+      ]);
+
+    
+    if (!result) return res.status(204).json({ 'message': 'No airlines found' });
+    res.json(result);
 }
 
 const createNewAirline = async (req, res) => {
@@ -31,7 +47,7 @@ const createNewAirline = async (req, res) => {
         const result = await User.create({
             "username": username,
             "password": hashedPwd,
-            "roles": { "Airline": 2000 },
+            "roles": { "User": ROLES_LIST.Airline },
             "detailsObjectId": details._id
         });
 

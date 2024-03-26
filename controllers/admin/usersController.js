@@ -4,9 +4,25 @@ const bcrypt = require('bcrypt');
 const ROLES_LIST = require('../../config/roles_list');
 
 const getAllUsers = async (req, res) => {
-    const users = await User.find({ 'roles.User': ROLES_LIST.User });
-    if (!users) return res.status(204).json({ 'message': 'No users found' });
-    res.json(users);
+     const result = await User.aggregate([
+        {
+          $match: {
+            'roles.User': ROLES_LIST.User
+          }
+        },
+        {
+          $lookup: {
+            from: "userdetails", 
+            localField: "detailsObjectId",
+            foreignField: "_id",
+            as: "details"
+          }
+        }
+      ]);
+
+    
+    if (!result) return res.status(204).json({ 'message': 'No users found' });
+    res.json(result);
 }
 
 const createNewUser = async (req, res) => {

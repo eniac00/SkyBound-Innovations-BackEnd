@@ -15,8 +15,6 @@ const userSchema = new Schema({
             type: Number,
             default: 1000
         },
-        Airline: Number,
-        Admin: Number
     },
     password: {
         type: String,
