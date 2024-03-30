@@ -73,10 +73,20 @@ const deletePackage = async (req, res) => {
     res.status(200).json({ "message": `Package ${req.body.id} removed`});
 }
 
+const getSinglePackage = async (req, res) => {
+  if (!req?.params?.id) return res.status(400).json({ "message": 'Package ID required' });
+  const SinglePackage = await package.findOne({ _id: req.params.id }).exec();
+  if (!SinglePackage) {
+      return res.status(204).json({ 'message': `Package ID ${req.params.id} not found` });
+  }
+  res.json(SinglePackage);
+}
+
 
 module.exports = {
-    getPackages,
-    createPackage,
-    updatePackage,
-    deletePackage
+  getPackages,
+  createPackage,
+  updatePackage,
+  deletePackage,
+  getSinglePackage // Here is the inconsistency
 }
