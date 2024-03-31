@@ -26,8 +26,8 @@ const getAllUsers = async (req, res) => {
 }
 
 const createNewUser = async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ 'message': 'Username and password are required.' });
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) return res.status(400).json({ 'message': 'Username and password and email are required.' });
 
     // check for duplicate usernames in the db
     const duplicate = await User.findOne({ username: username }).exec();
@@ -46,6 +46,7 @@ const createNewUser = async (req, res) => {
         const result = await User.create({
             "username": username,
             "password": hashedPwd,
+            "email": email,
             "detailsObjectId": details._id
         });
 
