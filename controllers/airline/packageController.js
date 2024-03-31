@@ -74,9 +74,12 @@ const deletePackage = async (req, res) => {
 }
 
 
+
+
 module.exports = {
-    getPackages,
-    createPackage,
-    updatePackage,
-    deletePackage
+  getPackages,
+  createPackage,
+  updatePackage,
+  deletePackage,
+  
 }

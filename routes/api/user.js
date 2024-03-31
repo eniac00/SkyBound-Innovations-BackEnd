@@ -13,5 +13,8 @@ router.route('/')
 router.route('/package')
     .get(verifyRoles(ROLES_LIST.User), packageController.getAllPackages);
 
+router.route('/package/:id')
+    .get(verifyRoles(ROLES_LIST.User), packageController.getSinglePackage);
+
 module.exports = router;
 
