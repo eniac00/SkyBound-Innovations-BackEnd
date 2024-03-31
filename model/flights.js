@@ -2,13 +2,42 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const flightSchema = new Schema({
-    airlineref: {
-        type: Schema.Types.ObjectId
+    airline_username: {
+        type: String,
+        required: true
     },
-    from: String,
-    to: String,
-    time: String,
-    Day: String
+    flightName:{
+        type:String,
+        require:true
+    },
+    from: {
+        type: String,
+        required: true
+    },
+    to: {
+        type: String,
+        required: true
+    },
+    time: {
+        type: String, 
+        required: true
+    },
+    pilot: {
+        type: [String], 
+        default: []
+    },
+    amount: {
+        type: String,
+        default: null // or use an empty string
+    },
+    seat: {
+        type: Map,
+        default: {
+            "A1": [], "A2": [], "A3": [], "A4": [], "A5": [],
+            "B1": [], "B2": [], "B3": [], "B4": [], "B5": []
+        }
+    }
+    
 });
 
 module.exports = mongoose.model('flightSchema', flightSchema);
