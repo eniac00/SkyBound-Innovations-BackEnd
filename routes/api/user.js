@@ -16,7 +16,8 @@ router.route('/package')
 
 router.route('/flight')
 // because use will send the selected airlines,fron,to fron the frontend to the back.
-    .post(verifyRoles(ROLES_LIST.User), flightController.getFlights);
+    .post(verifyRoles(ROLES_LIST.User), flightController.getFlights)
+    .put(verifyRoles(ROLES_LIST.User), flightController.updateSeats);
 
 router.route('/package/:id')
     .get(verifyRoles(ROLES_LIST.User), packageController.getSinglePackage);

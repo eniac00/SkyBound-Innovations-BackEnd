@@ -18,7 +18,9 @@ const handleLogin = async (req, res) => {
             {
                 "UserInfo": {
                     "username": founduser.username,
-                    "roles": roles
+                    "email": founduser.email,
+                    "roles": roles,
+                    "type": founduser.type
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -39,7 +41,7 @@ const handleLogin = async (req, res) => {
         res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
         // Send authorization roles and access token to username
-        res.json({ roles, accessToken });
+        res.json({ roles, accessToken, email: founduser.email, type: founduser.type });
 
     } else {
         res.sendStatus(401);
