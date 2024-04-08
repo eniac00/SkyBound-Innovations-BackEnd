@@ -20,5 +20,6 @@ router.route('/package')
 
 router.route('/flight')
     .post(verifyRoles(ROLES_LIST.Airline), flightController.createFlight)
+    .get(verifyRoles(ROLES_LIST.Airline), flightController.getFlights)
 
 module.exports = router;

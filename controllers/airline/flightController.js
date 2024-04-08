@@ -5,6 +5,27 @@ const Flight = require('../../model/Flight');
 
 
 
+const getFlights = async (req, res) => {
+ const airline = await User.findOne({ username: req.username }).exec();
+ const result = await AirlineDetails.aggregate([
+ {
+   $match: {
+     _id: airline.detailsObjectId
+   }
+ },
+ {
+   $lookup: {
+     from: "flightschemas", 
+     localField: "flights",
+     foreignField: "_id",
+     as: "flights"
+   }
+ }
+]);
+
+res.json(result);
+}
+
 const createFlight = async (req, res) => {
  const { flightName,from, to, price, time} = req.body;
 
@@ -33,6 +54,7 @@ const createFlight = async (req, res) => {
 
 
 module.exports = {
- createFlight
+ createFlight,
+ getFlights
  
 }
