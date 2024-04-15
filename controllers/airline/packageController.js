@@ -3,6 +3,7 @@ const User = require('../../model/User');
 const Package = require('../../model/Package');
 
 const getPackages = async (req, res) => {
+        console.log('sam',req.username)
         const airline = await User.findOne({ username: req.username }).exec();
         const result = await AirlineDetails.aggregate([
         {
@@ -25,7 +26,7 @@ const getPackages = async (req, res) => {
 
 const createPackage = async (req, res) => {
     const { packagename, destination, no_of_days, price, hotel, image } = req.body;
-
+    console.log('packagename',packagename,'destination',destination,'no_of_days',no_of_days,'price',price,'hotel',hotel,image,'image')
     if (!packagename || !destination || !no_of_days || !price || !hotel || !image) 
         return res.status(400).json({ 'message': 'some info are missing' });
 
