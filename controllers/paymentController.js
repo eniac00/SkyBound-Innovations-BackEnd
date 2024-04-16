@@ -1,5 +1,6 @@
 const Payment = require('../model/Payment');
 const Flight = require('../model/Flight');
+const User = require('../model/User');
 const SSLCommerzPayment = require('sslcommerz-lts');
 
 const doPayment = async (req, res) => {
@@ -13,7 +14,7 @@ const doPayment = async (req, res) => {
                 currency: 'BDT',
                 tran_id: `${payment._id}`, // use unique tran_id for each api call
                 success_url: `http://localhost:3001/payment/success/${payment._id}`,
-                fail_url: 'http://localhost:3001/fail',
+                fail_url: 'http://localhost:3001/payment/fail',
                 cancel_url: 'http://localhost:3001/cancel',
                 ipn_url: 'http://localhost:3001/ipn',
                 shipping_method: 'Courier',
@@ -60,13 +61,21 @@ const success = async (req, res) => {
           { new: true } // Return the updated document
         );
 
-        const seatKey = `seat.${updatedPayment.seats}`; // Construct the dynamic object key
+        if (updatedPayment.purpose === 'becoming_premium') {
+            const user = await User.findOneAndUpdate(
+                { username: updatedPayment.username },
+                { type: 'Premium' }, // Update the type to 'premium'
+                { new: true } // Return the updated document
+              );
+        } else {
+            const seatKey = `seat.${updatedPayment.seats}`; // Construct the dynamic object key
 
-        const updatedFlight = await Flight.findOneAndUpdate(
-            { _id: updatedPayment.flight_id }, // Filter by flightId
-            { $push: { [seatKey]: updatedPayment.username } }, // Append username to the array corresponding to seat
-            { new: true } // Return the updated document
-        );
+            const updatedFlight = await Flight.findOneAndUpdate(
+                { _id: updatedPayment.flight_id }, // Filter by flightId
+                { $push: { [seatKey]: updatedPayment.username } }, // Append username to the array corresponding to seat
+                { new: true } // Return the updated document
+            );
+        }
         res.redirect('http://localhost:5173/success');
     } catch(err) {
         console.log(err);
@@ -74,7 +83,12 @@ const success = async (req, res) => {
     }
 }
 
+const fail = async (req, res) => {
+    res.redirect('http://localhost:5173/fail');
+}
+
 module.exports = {
     success,
+    fail,
     doPayment
 }
