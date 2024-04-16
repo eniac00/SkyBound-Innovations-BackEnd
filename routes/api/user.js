@@ -5,6 +5,7 @@ const packageController = require('../../controllers/user/packageController');
 const ROLES_LIST = require('../../config/roles_list');
 const verifyRoles = require('../../middleware/verifyRoles');
 const flightController = require('../../controllers/user/flightController');
+const paymentController = require('../../controllers/paymentController');
 
 
 router.route('/')
