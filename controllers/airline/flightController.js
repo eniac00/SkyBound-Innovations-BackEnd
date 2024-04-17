@@ -60,8 +60,29 @@ const createFlight = async (req, res) => {
 }
 
 
+const deleteFlight = async (req, res) => {
+
+  if (!req?.body?.id) return res.status(400).json({ "message": 'Flight ID required' });
+
+  const flight = await Flight.findOne({ _id: req.body.id }).exec();
+
+  if (!flight) {
+      return res.status(204).json({ 'message': `flight ID ${req.body.id} not found` });
+  }
+
+  const airline = await User.findOne({ username: req.username }).exec();
+  const airlineDetails = await AirlineDetails.findOne({ _id: airline.detailsObjectId }).exec();
+
+  await AirlineDetails.updateOne({ _id: airlineDetails._id }, { $pull: { packages: req.body.id } });
+  await Flight.deleteOne({ _id: req.body.id });
+
+  res.status(200).json({ "message": `Flight ${req.body.id} removed`});
+}
+
+
 module.exports = {
  createFlight,
- getFlights
+ getFlights,
+ deleteFlight
  
 }
