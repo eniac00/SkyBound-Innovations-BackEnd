@@ -13,7 +13,7 @@ router.route('/users')
     .delete(verifyRoles(ROLES_LIST.Admin), usersController.deleteUser);
     
 router.route('/users/:id')
-.get(verifyRoles(ROLES_LIST.Admin), usersController.getUser);
+    .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser);
 
 
 router.route('/airlines')
