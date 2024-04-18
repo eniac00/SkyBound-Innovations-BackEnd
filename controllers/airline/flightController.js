@@ -59,6 +59,31 @@ const createFlight = async (req, res) => {
  }
 }
 
+const updateFlight = async (req, res) => {
+  if (!req?.body?.id) return res.status(400).json({ "message": 'Flight ID required' });
+
+    try {
+      const flight = await Flight.findOne({ _id: req.body.id }).exec();
+
+      if (!flight) {
+          return res.status(204).json({ 'message': `Flight ID ${req.body.id} not found` });
+      }
+
+
+      if (req.body?.flightName) flight.flightName = req.body.flightName;
+      if (req.body?.from) flight.from = req.body.from;
+      if (req.body?.time) flight.time = req.body.time;
+      if (req.body?.to) flight.to = req.body.to;
+      if (req.body?.price) flight.price = req.body.price;
+      
+      const result = await flight.save();
+      res.status(200).json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(503).json({ 'error': 'update flight failed' });
+    }
+}
+
 
 const deleteFlight = async (req, res) => {
 
@@ -83,6 +108,6 @@ const deleteFlight = async (req, res) => {
 module.exports = {
  createFlight,
  getFlights,
- deleteFlight
- 
+ deleteFlight,
+ updateFlight
 }

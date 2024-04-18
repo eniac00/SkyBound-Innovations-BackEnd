@@ -20,6 +20,7 @@ router.route('/package')
 
 router.route('/flight')
     .post(verifyRoles(ROLES_LIST.Airline), flightController.createFlight)
+    .put(verifyRoles(ROLES_LIST.Airline), flightController.updateFlight)
     .get(verifyRoles(ROLES_LIST.Airline), flightController.getFlights)
     .delete(verifyRoles(ROLES_LIST.Airline), flightController.deleteFlight);
 

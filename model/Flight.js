@@ -28,7 +28,7 @@ const flightSchema = new Schema({
     },
     packageId:{
         type:String,
-        required:true
+        required: false
     },
     seat: {
         type: Map,
